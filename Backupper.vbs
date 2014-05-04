@@ -35,6 +35,7 @@ For Each file in folder.Files
 	If Not objFSO.FolderExists(strNewLoc) Then
 		set newFolder = objFSO.CreateFolder(strNewLoc)
 	Else
+		set newFolder = objFSO.GetFolder(strNewLoc)
 		objLog.WriteLine "Folder already created"
 	End If
 	strNewLoc = strNewLoc & "\"
@@ -49,29 +50,55 @@ For Each file in folder.Files
 		Set objRoot = xmlList.CreateElement("smil")
 		xmlList.AppendChild(objRoot)
 		
+		Set objText = xmlList.CreateTextNode(Chr(13) & Chr(10) & "    ")
+		objRoot.AppendChild(objText)
+		
 		Set objHead = xmlList.CreateElement("head")
 		objRoot.AppendChild(objHead)
+		
+		Set objText = xmlList.CreateTextNode(Chr(13) & Chr(10) & "    " & "   ")
+		objHead.AppendChild(objText)
 		
 		Set objMeta = xmlList.CreateElement("meta")
 		objMeta.SetAttribute "name", "Generator"
 		objMeta.SetAttribute "content", "PlaylistBackupper"
 		objHead.AppendChild(objMeta)
 		
+		Set objText = xmlList.CreateTextNode(Chr(13) & Chr(10) & "    " & "   ")
+		objHead.AppendChild(objText)
+		
 		Set objMeta = xmlList.CreateElement("meta")
 		objMeta.SetAttribute "name", "Author"
 		objMeta.SetAttribute "content", "PlaylistBackupper"
 		objHead.AppendChild(objMeta)
 		
+		Set objText = xmlList.CreateTextNode(Chr(13) & Chr(10) & "    " & "   ")
+		objHead.AppendChild(objText)
+		
 		Set objTitle = xmlList.CreateElement("title")
 		objTitle.Text = strFileName
 		objHead.AppendChild(objTitle)
 		
+		Set objText = xmlList.CreateTextNode(Chr(13) & Chr(10) & "    ")
+		objHead.AppendChild(objText)
+		Set objText = xmlList.CreateTextNode(Chr(13) & Chr(10) & "    ")
+		objRoot.AppendChild(objText)
+		
 		Set objBody = xmlList.CreateElement("body")
 		objRoot.AppendChild(objBody)
+		
+		Set objText = xmlList.CreateTextNode(Chr(13) & Chr(10) & "    " & "    ")
+		objBody.AppendChild(objText)
 		
 		Set objSeq = xmlList.CreateElement("seq")
 		objBody.AppendChild(objSeq)
 		
+		Set objText = xmlList.CreateTextNode(Chr(13) & Chr(10) & "    " & "    ")
+		objSeq.AppendChild(objText)
+		Set objText = xmlList.CreateTextNode(Chr(13) & Chr(10) & "    ")
+		objBody.AppendChild(objText)
+		Set objText = xmlList.CreateTextNode(Chr(13) & Chr(10))
+		objRoot.AppendChild(objText)
 	Else
 		xmlList.Load(strNewPlaylist)
 		Set newFiles = xmlList.SelectNodes(strQuery)
@@ -97,9 +124,13 @@ For Each file in folder.Files
 				objLog.WriteLine "   File already exists, skipping"
 			End If
 			
+			Set objText = xmlList.CreateTextNode("    ")
+			objSeq.AppendChild(objText)
 			Set objMedia = xmlList.CreateElement("media")
 			objMedia.SetAttribute "src", ".\" & strSimpleFileName
 			objSeq.AppendChild(objMedia)
+			Set objText = xmlList.CreateTextNode(Chr(13) & Chr(10) & "    " & "    ")
+			objSeq.AppendChild(objText)
 		Else
 			objLog.WriteLine " Err: File does not exist, skipping"
 		End If
