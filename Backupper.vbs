@@ -26,6 +26,8 @@ objLog.WriteLine "--" & Now & "--"
 
 For Each file in folder.Files 
 	objLog.WriteLine "Handling " & file.Path
+	Set xmlDoc = CreateObject("Microsoft.XMLDOM")  
+	Set xmlList = CreateObject("Microsoft.XMLDOM")
 	
 	strFileName = file.Name
 	strFileName = Left(strFileName, InStrRev(strFileName, ".") - 1)
@@ -37,12 +39,52 @@ For Each file in folder.Files
 	End If
 	strNewLoc = strNewLoc & "\"
 	
-	xmlDoc.Load(file.Path)
+	strNewPlaylist = strNewLoc & strFileName & ".wpl"
+	
 	strQuery = "/smil/body/seq/media"
-	Set colNodes = xmlDoc.selectNodes( strQuery )
+	Set newFiles = Nothing
+	Set objSeq = Nothing
+	If Not objFSO.FileExists(strNewPlaylist) Then
+		WScript.Echo strNewPlaylist
+		Set objRoot = xmlList.CreateElement("smil")
+		xmlList.AppendChild(objRoot)
+		
+		Set objHead = xmlList.CreateElement("head")
+		objRoot.AppendChild(objHead)
+		
+		Set objMeta = xmlList.CreateElement("meta")
+		objMeta.SetAttribute "name", "Generator"
+		objMeta.SetAttribute "content", "PlaylistBackupper"
+		objHead.AppendChild(objMeta)
+		
+		Set objMeta = xmlList.CreateElement("meta")
+		objMeta.SetAttribute "name", "Author"
+		objMeta.SetAttribute "content", "PlaylistBackupper"
+		objHead.AppendChild(objMeta)
+		
+		Set objTitle = xmlList.CreateElement("title")
+		objTitle.Text = strFileName
+		objHead.AppendChild(objTitle)
+		
+		Set objBody = xmlList.CreateElement("body")
+		objRoot.AppendChild(objBody)
+		
+		Set objSeq = xmlList.CreateElement("seq")
+		objBody.AppendChild(objSeq)
+		
+	Else
+		xmlList.Load(strNewPlaylist)
+		Set newFiles = xmlList.SelectNodes(strQuery)
+		newFiles.RemoveAll
+		
+		Set objSeq = xmlList.SelectSingleNode("/smil/body/seq")
+	End If
+	
+	xmlDoc.Load(file.Path)
+	Set colNodes = xmlDoc.SelectNodes(strQuery)
 	
 	For Each objNode in colNodes
-		strFileName = objNode.getAttribute("src")
+		strFileName = objNode.GetAttribute("src")
 		strFilePath = strBasePath & "\" & strFileName
 		
 		strSimpleFileName = Mid(strFileName, InStrRev(strFileName, "\") + 1)
@@ -54,10 +96,16 @@ For Each file in folder.Files
 			Else
 				objLog.WriteLine "   File already exists, skipping"
 			End If
+			
+			Set objMedia = xmlList.CreateElement("media")
+			objMedia.SetAttribute "src", ".\" & strSimpleFileName
+			objSeq.AppendChild(objMedia)
 		Else
 			objLog.WriteLine " Err: File does not exist, skipping"
 		End If
 	Next
+	
+	xmlList.Save strNewPlaylist
 Next
 
 objLog.Close
