@@ -1,10 +1,21 @@
+strProgramPath = "C:\projects\PlaylistBackupper"
 Set objFSO = CreateObject("Scripting.FileSystemObject")
 Set xmlDoc = CreateObject("Microsoft.XMLDOM")
 xmlDoc.Async = "False"
 strBasePath = "C:\Users\Ben\Music\Afspeellijsten"
 Set folder = objFSO.GetFolder(strBasePath)
 
-strLogLocation = "C:\projects\logs\CopyMusic.log"
+objDate = Now
+strDate = Year(objDate)
+If Month(objDate) < 10 Then
+	strDate = strDate & "0"
+End If
+strDate = strDate & Month(objDate)
+If Day(objDate) < 10 Then
+	strDate = strDate & "0"
+End If
+strDate = strDate & Day(objDate)
+strLogLocation = strProgramPath & "\logs\" & strDate  & ".log"
 set objLog = objFSO.OpenTextFile(strLogLocation, 8, True)
 objLog.WriteLine "--" & Now & "--"
 
