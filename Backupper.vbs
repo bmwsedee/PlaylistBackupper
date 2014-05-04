@@ -1,8 +1,10 @@
+strBasePath = "C:\Users\Ben\Music\Afspeellijsten"
 strProgramPath = "C:\projects\PlaylistBackupper"
+
 Set objFSO = CreateObject("Scripting.FileSystemObject")
 Set xmlDoc = CreateObject("Microsoft.XMLDOM")
 xmlDoc.Async = "False"
-strBasePath = "C:\Users\Ben\Music\Afspeellijsten"
+
 Set folder = objFSO.GetFolder(strBasePath)
 
 objDate = Now
