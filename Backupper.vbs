@@ -1,3 +1,15 @@
+Sub AddNewLine(document, afterElement, indent)
+	Set objText = document.CreateTextNode(Chr(13) & Chr(10))
+	afterElement.AppendChild(objText)
+	
+	count = 1
+	Do While count <= indent
+		Set objText = document.CreateTextNode(" ")
+		afterElement.AppendChild(objText)
+		count = count + 1
+	Loop
+End Sub
+
 strBasePath = "C:\Users\Ben\Music\Afspeellijsten"
 
 Set objFSO = CreateObject("Scripting.FileSystemObject")
@@ -50,55 +62,45 @@ For Each file in folder.Files
 		Set objRoot = xmlList.CreateElement("smil")
 		xmlList.AppendChild(objRoot)
 		
-		Set objText = xmlList.CreateTextNode(Chr(13) & Chr(10) & "    ")
-		objRoot.AppendChild(objText)
+		AddNewLine xmlList, objRoot, 4
 		
 		Set objHead = xmlList.CreateElement("head")
 		objRoot.AppendChild(objHead)
 		
-		Set objText = xmlList.CreateTextNode(Chr(13) & Chr(10) & "    " & "   ")
-		objHead.AppendChild(objText)
+		AddNewLine xmlList, objHead, 8
 		
 		Set objMeta = xmlList.CreateElement("meta")
 		objMeta.SetAttribute "name", "Generator"
 		objMeta.SetAttribute "content", "PlaylistBackupper"
 		objHead.AppendChild(objMeta)
 		
-		Set objText = xmlList.CreateTextNode(Chr(13) & Chr(10) & "    " & "   ")
-		objHead.AppendChild(objText)
+		AddNewLine xmlList, objHead, 8
 		
 		Set objMeta = xmlList.CreateElement("meta")
 		objMeta.SetAttribute "name", "Author"
 		objMeta.SetAttribute "content", "PlaylistBackupper"
 		objHead.AppendChild(objMeta)
 		
-		Set objText = xmlList.CreateTextNode(Chr(13) & Chr(10) & "    " & "   ")
-		objHead.AppendChild(objText)
+		AddNewLine xmlList, objHead, 8
 		
 		Set objTitle = xmlList.CreateElement("title")
 		objTitle.Text = strFileName
 		objHead.AppendChild(objTitle)
 		
-		Set objText = xmlList.CreateTextNode(Chr(13) & Chr(10) & "    ")
-		objHead.AppendChild(objText)
-		Set objText = xmlList.CreateTextNode(Chr(13) & Chr(10) & "    ")
-		objRoot.AppendChild(objText)
+		AddNewLine xmlList, objHead, 4
+		AddNewLine xmlList, objRoot, 4
 		
 		Set objBody = xmlList.CreateElement("body")
 		objRoot.AppendChild(objBody)
 		
-		Set objText = xmlList.CreateTextNode(Chr(13) & Chr(10) & "    " & "    ")
-		objBody.AppendChild(objText)
+		AddNewLine xmlList, objBody, 8
 		
 		Set objSeq = xmlList.CreateElement("seq")
 		objBody.AppendChild(objSeq)
 		
-		Set objText = xmlList.CreateTextNode(Chr(13) & Chr(10) & "    " & "    ")
-		objSeq.AppendChild(objText)
-		Set objText = xmlList.CreateTextNode(Chr(13) & Chr(10) & "    ")
-		objBody.AppendChild(objText)
-		Set objText = xmlList.CreateTextNode(Chr(13) & Chr(10))
-		objRoot.AppendChild(objText)
+		AddNewLine xmlList, objSeq, 8
+		AddNewLine xmlList, objBody, 4
+		AddNewLine xmlList, objRoot, 0
 	Else
 		xmlList.Load(strNewPlaylist)
 		Set newFiles = xmlList.SelectNodes(strQuery)
@@ -129,8 +131,7 @@ For Each file in folder.Files
 			Set objMedia = xmlList.CreateElement("media")
 			objMedia.SetAttribute "src", ".\" & strSimpleFileName
 			objSeq.AppendChild(objMedia)
-			Set objText = xmlList.CreateTextNode(Chr(13) & Chr(10) & "    " & "    ")
-			objSeq.AppendChild(objText)
+			AddNewLine xmlList, objSeq, 8
 		Else
 			objLog.WriteLine " Err: File does not exist, skipping"
 		End If
