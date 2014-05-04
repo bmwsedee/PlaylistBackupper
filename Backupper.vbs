@@ -23,7 +23,7 @@ For Each file in folder.Files
 	objLog.WriteLine "Handling " & file.Path
 	
 	strFileName = file.Name
-	strFileName = Left(strFileName, InStrRev(strFileName, "."))
+	strFileName = Left(strFileName, InStrRev(strFileName, ".") - 1)
 	strNewLoc = strBasePath & "\" & strFileName
 	If Not objFSO.FolderExists(strNewLoc) Then
 		set newFolder = objFSO.CreateFolder(strNewLoc)
@@ -40,12 +40,11 @@ For Each file in folder.Files
 		strFileName = objNode.getAttribute("src")
 		strFilePath = strBasePath & "\" & strFileName
 		
-		strSimpleFileName = Left(strFileName, InStrRev(strFileName, "."))
-		strSimpleFileName = Right(strSimpleFileName, InStrRev(strSimpleFileName, "\"))
+		strSimpleFileName = Mid(strFileName, InStrRev(strFileName, "\") + 1)
 		objLog.WriteLine "   Handling " & strSimpleFileName
 	
 		If objFSO.FileExists(strFilePath) Then
-			If Not objFSO.FileExists(strNewLoc & "\" & strSimpleFileName) Then
+			If Not objFSO.FileExists(strNewLoc & strSimpleFileName) Then
 				objFSO.CopyFile strFilePath, strNewLoc
 			Else
 				objLog.WriteLine "   File already exists, skipping"
