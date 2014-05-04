@@ -1,9 +1,9 @@
 strBasePath = "C:\Users\Ben\Music\Afspeellijsten"
-strProgramPath = "C:\projects\PlaylistBackupper"
 
 Set objFSO = CreateObject("Scripting.FileSystemObject")
 Set xmlDoc = CreateObject("Microsoft.XMLDOM")
 xmlDoc.Async = "False"
+strProgramPath = objFSO.GetAbsolutePathName(".")
 
 Set folder = objFSO.GetFolder(strBasePath)
 
@@ -18,6 +18,9 @@ If Day(objDate) < 10 Then
 End If
 strDate = strDate & Day(objDate)
 strLogLocation = strProgramPath & "\logs\" & strDate  & ".log"
+If Not objFSO.FolderExists(strProgramPath & "\logs") Then
+	objFSO.CreateFolder(strProgramPath & "\logs")
+End If
 set objLog = objFSO.OpenTextFile(strLogLocation, 8, True)
 objLog.WriteLine "--" & Now & "--"
 
